@@ -1,6 +1,7 @@
 package drawing.view;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -66,6 +67,118 @@ public class ArtPanel extends JPanel
 
 	}
 	
+	private boolean coinFlip()
+	{
+		return (int) (Math.random() * 2) == 0;
+	}
+	
+	private Polygon createPolygon(int sides)
+	{
+		Polygon currentShape = new Polygon();
+		
+		int originX = (int) (Math.random() * 600);
+		int originY = (int) (Math.random() * 600);
+		
+		for (int i =0; i < sides; i++)
+		{
+			int minus = coinFlip() ? -1 : 1;
+			int shiftX = (int) (Math.random() * currentScale) * minus;
+			minus = coinFlip() ? -1 : 1;
+			int shiftY = (int) (Math.random() * currentScale) * minus;
+			currentShape.addPoint(originX + shiftX, originY + shiftY);
+		}
+				
+	}
+	
+	private Rectangle createRectangle()
+	{
+		Rectangle currentRectangle();
+		
+		int cornerX = (int) (Math.random() * 600);
+		int cornerY = (int) (Math.random() * 600);
+		int width = (int) (Math.random() * currentScale) + 1;
+		
+		if(coinFlip())
+		{
+			currentRectangle = new Rectangle(cornerX, cornerY, width, width);
+		}
+		else
+		{
+			int height = (int) (Math.random() * currentScale) + 1;
+			currentRectangle = new Rectangle(cornerX, cornerY, width, height);
+
+		}
+		
+		return currentRectangle;
+
+
+	}
+	
+	private Ellipse2D createEllipse()
+	{
+		Ellipse2D ellipse = new Ellipse2D.Double();
+		
+		int cornerX = (int) (Math.random() * 600);
+		int cornerY = (int) (Math.random() * 600);
+		int width = (int) (Math.random() * currentScale) + 1;
+		
+		if(coinFlip())
+		{
+			ellipse.setFrame(cornerX, cornerY, width, width);
+		}
+		else
+		{
+			double height = Math.random() * currentScale + 1;
+			ellipse.setFrame(cornerX, cornerY, width, height);
+
+		}
+		
+		return ellipse;
+	}
+	
+	private void setupListeners()
+	{
+		rectangleButton.addActionListener(new ActionListener()
+				{
+			public void actionPerformed(ActionEvent click)
+			{
+				Rectangle rectangle = createRectangle();
+				canvas.addShape(rectangle);
+			}
+				});
+		triangleButton.addActionListener(new ActionListener()
+		{
+	public void actionPerformed(ActionEvent click)
+	{
+		Polygon Triangle = createTriangle();
+		canvas.addShape(Triangle);
+	}
+		});
+		
+		polygonButton.addActionListener(new ActionListener()
+		{
+	public void actionPerformed(ActionEvent click)
+	{
+		Ellipse2D ellipse = createEllipse();
+		canvas.addShape(ellipse);
+	}
+		});
+		
+		clearButton.addActionListener(click-> canvas.clear());
+		saveButton.addActionListener(click-> canvas.save());
+		colorButton.addActionListener(click -> canvas.changeBackground());
+		scaleSlider.addChangeListener(new ChangeListener()
+				{
+			@overide
+			public void stateChanged(ChangeEvent e)
+			{
+				if(!scaleSlider.getValueIsAdjusting())
+				{
+					currentScale = scaleSlider.getValue();
+				}
+			}
+				});
+	}
 	private void setupSliders()
 	{
 		Hashtable<Integer, JLabel> scaleLabels = new Hashtable<Integer, JLabel>();
